@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Admin Dashboard</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Keeping consistent styles */
+        .authContainer {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .authContainer h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2a2185;
+        }
+
+        .authContainer form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .authContainer label {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .authContainer input {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .authContainer button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #2a2185;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .authContainer button:hover {
+            background-color: #241d73;
+        }
+
+        .authContainer .toggle {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .authContainer .toggle a {
+            color: #2a2185;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="authContainer">
+        <h2>Register</h2>
+        <form action="/register" method="POST">
+            <label for="firstname">First Name</label>
+            <input type="text" id="firstname" name="firstname" placeholder="Enter your First name" required>
+
+            <label for="secondname">Second Name</label>
+            <input type="text" id="secondname" name="secondname" placeholder="Enter your Second name" required>
+
+            <label for="age">Age</label>
+            <input type="number" id="age" name="age" placeholder="Enter Your age" required>
+
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Choose a username" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your Email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Create a password" required>
+
+            <label for="confirm_password">Confirm Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+
+            <button type="submit">Register</button>
+        </form>
+        <div class="toggle">
+            <p>Already have an account? <a href="/login">Login</a></p>
+        </div>
+    </div>
+</body>
+
+</html>
