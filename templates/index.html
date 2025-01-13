@@ -1,13 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Admin Short Videos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/styles/style.css') }}">
-</head>
+    <style>
+        .video-interaction {
+            margin-top: 10px;
+        }
 
+        .rating, .comments {
+            margin-bottom: 10px;
+        }
+
+        .comment-list {
+            margin-top: 10px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+
+        .comment-list div {
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
 <body>
     <div class="container">
         <!-- Navigation -->
@@ -18,31 +36,15 @@
                         <span class="icon">
                             <ion-icon name="logo-apple"></ion-icon>
                         </span>
-                        <span class="title">Admin Short Videos</span>
+                        <span class="title">Short Videos TikTok</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ url_for('dashboard') }}">
                         <span class="icon">
-                            <ion-icon name="home-outline"></ion-icon>
+                            <ion-icon name="logo-tiktok"></ion-icon>
                         </span>
-                        <span class="title">Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url_for('upload_video') }}">
-                        <span class="icon">
-                            <ion-icon name="cloud-upload-outline"></ion-icon>
-                        </span>
-                        <span class="title">Upload Video</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url_for('settings') }}">
-                        <span class="icon">
-                            <ion-icon name="settings-outline"></ion-icon>
-                        </span>
-                        <span class="title">Settings</span>
+                        <span class="title">Watch Videos</span>
                     </a>
                 </li>
                 <li>
@@ -62,29 +64,36 @@
                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
-                <!-- Search -->
-                <div class="search">
-                    <label>
-                        <input type="text" placeholder="Search here">
-                        <ion-icon name="search-outline"></ion-icon>
-                    </label>
-                </div>
-                <!-- User Image -->
-                <div class="user">
-                    <img src="{{ url_for('static', filename='assets/imgs/user.jpg') }}" alt="User">
+                <!-- Filter by Category -->
+                <div class="filter">
+                    <label for="categoryDropdown"><strong>Filter by Category:</strong></label>
+                    <select id="categoryDropdown" onchange="filterVideosByCategory()">
+                        <option value="all">All Categories</option>
+                        <option value="Travel">Travel</option>
+                        <option value="Fitness">Fitness</option>
+                        <option value="Lifestyle">Lifestyle</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Leisure">Leisure</option>
+                        <option value="Education">Education</option>
+                        <option value="Health">Health</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Sports">Sports</option>
+                    </select>
                 </div>
             </div>
 
             <!-- Welcome Section -->
             <div class="welcome">
                 <h1>Welcome, {{ username }}</h1>
-                <p>Your uploaded videos are displayed below:</p>
+                <br>
+                <p>What all the videos here!!!</p>
             </div>
 
             <!-- Video Cards -->
-            <div class="cardBox">
+            <div class="cardBox" id="videoList">
                 {% for video in videos %}
-                <div class="card">
+                <div class="card" data-category="{{ video['category'].lower() }}">
                     <div class="video-container">
                         <!-- Video Player -->
                         <video controls width="100%">
@@ -97,6 +106,32 @@
                         <p>{{ video['description'] }}</p>
                         <span class="category">{{ video['category'] }}</span>
                     </div>
+
+                    <!-- Interaction Section -->
+                    <div class="video-interaction">
+                        <!-- Rating Section -->
+                        <div class="rating">
+                            <label for="rating-{{ loop.index }}">Rate this video:</label>
+                            <select id="rating-{{ loop.index }}" onchange="submitRating({{ loop.index }})">
+                                <option value="" disabled selected>Rate</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+
+                        <!-- Comment Section -->
+                        <div class="comments">
+                            <label for="comment-{{ loop.index }}">Leave a comment:</label>
+                            <textarea id="comment-{{ loop.index }}" placeholder="Type your comment here"></textarea>
+                            <button onclick="submitComment({{ loop.index }})">Submit</button>
+                            <div id="comment-list-{{ loop.index }}" class="comment-list">
+                                <!-- Comments will be dynamically added here -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 {% endfor %}
             </div>
@@ -105,6 +140,39 @@
 
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-</body>
 
+    <script>
+        function filterVideosByCategory() {
+            const selectedCategory = document.getElementById('categoryDropdown').value.toLowerCase();
+            const videoCards = document.querySelectorAll('.card');
+            videoCards.forEach(card => {
+                const category = card.getAttribute('data-category').toLowerCase();
+                card.style.display = (selectedCategory === 'all' || category === selectedCategory) ? 'block' : 'none';
+            });
+        }
+
+        function submitRating(videoId) {
+            const rating = document.getElementById(`rating-${videoId}`).value;
+            alert(`Rating submitted for video ${videoId}: ${rating}/5`);
+            // Implement backend logic to save the rating
+        }
+
+        function submitComment(videoId) {
+            const commentBox = document.getElementById(`comment-${videoId}`);
+            const commentList = document.getElementById(`comment-list-${videoId}`);
+            const comment = commentBox.value.trim();
+
+            if (comment) {
+                const commentDiv = document.createElement('div');
+                commentDiv.textContent = comment;
+                commentList.appendChild(commentDiv);
+                commentBox.value = '';
+            } else {
+                alert('Please write a comment before submitting.');
+            }
+
+            // Implement backend logic to save the comment
+        }
+    </script>
+</body>
 </html>
